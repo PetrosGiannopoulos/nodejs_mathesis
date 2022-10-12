@@ -16,4 +16,6 @@ app.use((req, res)=>{
     res.redirect("/books")
 })
 
-app.listen(3001, ()=> console.log("Η εφαρμογή ξεκίνησε"))
+const PORT = 3001
+
+app.listen(PORT, ()=> console.log("Η εφαρμογή ξεκίνησε στη θύρα" + PORT))
