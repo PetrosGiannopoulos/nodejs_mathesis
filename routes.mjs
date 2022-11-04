@@ -1,46 +1,74 @@
 import express from 'express'
-import { BookList } from './booklist.mjs'
-import { body, validationResult } from 'express-validator'
+import * as Validator from './validator/validation.mjs'
+import * as UserController from './controller/user_controller.mjs'
+import * as BookController from './controller/book_controller.mjs'
 
 const router = express.Router()
-const booklist = new BookList()
 
-router.get("/books", async (req,res)=>{
-    await booklist.loadBooksFromFile()
-    res.render("booklist", {books: booklist.myBooks.books})
-})
-
-router.get("/addbookform", (req, res) =>{
-res.render("addbookform")
-})
-
-router.post(
-    "/doaddbook",
-    body("newBookTitle")
-    .isAlpha('el-GR').trim().escape()
-    .withMessage("Πρέπει να είναι γραμμένος στα ελληνικά")
-    .isLength({min: 5})
-    .withMessage("Τουλάχιστον 5 γράμματα"),
-    async (req, res)=>{
-
-    const errors = validationResult(req)
-
-    if(errors.isEmpty()){
-        const newBook = {
-            "title":req.body["newBookTitle"],
-            "author":req.body["newBookAuthor"]
-        }
-    
-        await booklist.addBookToFile(newBook)
+router.get("/", (req, res)=>{
+    if(req.session.username)
         res.redirect("/books")
-    }
-    else{
-        res.render("addbookform", {
-            message: errors.mapped(),
-            title: req.body["newBookTitle"],
-            author:req.body["newBookAuthor"]
-        })
-    }
+    else
+        res.render("home")
 })
+
+router.get("/books",
+    UserController.checkIfAuthenticated,
+    BookController.showBookList)
+
+router.get("/books",
+    UserController.checkIfAuthenticated,
+    BookController.showBookList)
+
+router.get("/addbookform",
+    UserController.checkIfAuthenticated,
+    (req, res) =>{
+        res.render("addbookform")
+    })
+
+router.get("/commentSection/:title", 
+    UserController.checkIfAuthenticated,
+    BookController.showBookComments
+    )
+
+router.post("/doaddcomment",
+    UserController.checkIfAuthenticated,
+    BookController.addComment
+)
+
+router.post("/books",
+    //UserController.checkIfAuthenticated,
+    Validator.validateLogin,
+    UserController.doLogin,
+    BookController.showBookList)
+
+router.post("/doaddbook", 
+    UserController.checkIfAuthenticated,
+    Validator.validateNewBook,
+    BookController.addBook,
+    BookController.showBookList)
+
+
+router.get("/delete/:title",
+    UserController.checkIfAuthenticated,
+    BookController.deleteBook,
+    BookController.showBookList
+)
+
+router.get("/logout", UserController.doLogout, (req, res)=>{
+    //req.session.destroy()
+    res.redirect("/")
+})
+
+router.get("/register", (req, res)=>{
+    res.render("registrationform")
+})
+
+router.post("/doregister",
+    
+    Validator.validateNewUser,
+    UserController.doRegister)
+
+
 
 export {router}

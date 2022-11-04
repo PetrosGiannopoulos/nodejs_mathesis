@@ -1,0 +1,109 @@
+
+<form action="/doaddcomment" method="post" class="myComment">
+<h1 class="pt-2">Σχόλια</h1>
+
+<style>
+    table{
+        border:1px solid black;
+    }
+
+    button{
+        background-color:cornflowerblue;
+        color: cornflowerblue
+    }
+
+    .navbar-nav .nav-item .nav-link {
+        color:darkorange;
+    }
+    .nav-item:hover {
+        color: cornflowerblue
+    }
+
+    tr:hover{
+       background-color :aliceblue;
+    }
+
+    input[readonly]{
+        background-color:lightgrey;
+        border: 0;
+        font-size: 1em;
+        pointer-events: none;
+    }
+
+}
+</style>
+
+<div class="table table-responsive-sm pt-2">
+
+    <table class="table table-hover">
+        
+        <thead>
+            <tr>
+                <th>Προσθέστε το σχόλιό σας</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Τίτλος Βιβλίου</td>
+                <td>
+                    {{#if bookTitle}}
+                        <input class="form-control" id="bookCommentTitle" name="bookCommentTitle" type="text" value= "{{this.bookTitle}}" placeholder="Τίτλος Βιβλίου" readonly>
+                    {{/if}}
+                </td>
+            </tr>
+            <tr>
+                <td>Συγγραφέας Βιβλίου</td>
+                <td>
+                    {{#if bookAuthor}}
+                        <input class="form-control" id="bookCommentAuthor" name="bookCommentAuthor" type="text" value= "{{this.bookAuthor}}" placeholder="Συγγραφέας Βιβλίου" readonly>
+                    {{/if}}
+                </td>
+            </tr>
+            <tr>
+                <td>Σχόλιο Χρήστη</td>
+                <td>
+                    {{#if userComment}}
+                        <input class="form-control" id="newBookComment" name="newBookComment" type="text" placeholder="{{this.userComment}}">
+                    {{/if}}
+                    {{#unless userComment}}
+                        <input class="form-control" id="newBookComment" name="newBookComment" type="text" placeholder="">
+                    {{/unless}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+</div> 
+<div class="row mt-3 pb-5">
+    <div class="col mt-2">
+        <button type="submit" class="btn btn-sm btn-outline-primary">Υποβολή</button> 
+    </div>
+</div>
+
+{{#if comments}}
+<h3>Σχόλια άλλων χρηστών για αυτό το βιβλίο</h3>
+
+<div class="table table-responsive-sm">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Χρήστης</th>
+                <th>Σχόλιο</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each comments}}
+                <tr>
+                    <td>{{this.UserName}}</td>
+                    <td>{{this.comment}}</td>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+{{/if}}
+{{#unless comments}}
+<h5>Δεν υπάρχουν σχόλια άλλων χρηστών για αυτό το βιβλίο...</h5>
+{{/unless}}
+
+</form>

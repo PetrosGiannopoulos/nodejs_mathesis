@@ -1,4 +1,11 @@
 <h2>τα βιβλία μου - ({{books.length}})</h2>
+
+<style>
+    table tbody{
+        border-top:15px solid white;
+    }
+</style>
+
 {{#if books}}
     <div class="table-responsive-sm">
         <table class="table table-hover">
@@ -16,6 +23,14 @@
                     <tr>
                         <td>{{this.title}}</td>
                         <td colspan="2">{{this.author}}</td>
+                        
+                        <th class="d-print-none">
+                            <div class="col mt-2">
+                                <a class="btn btn-sm btn-danger bg-danger" href="/delete/{{this.title}}">Διαγραφή</a>
+                                <a class="btn btn-sm btn-info bg-info text-white" href="/commentSection/{{this.title}}">Σχόλια</a>
+                            </div>
+                        </th>
+                       
                     </tr>
                 {{/each}}
             </tbody>
